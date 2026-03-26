@@ -130,7 +130,7 @@ namespace SimpleCalculator
         private void btnpm_Click(object sender, EventArgs e) { }
 
         private void C_Click(object sender, EventArgs e) { }
-
+        
         private void CE_Click(object sender, EventArgs e) { }
 
         private void del_Click(object sender, EventArgs e) { }
