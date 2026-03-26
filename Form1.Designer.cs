@@ -55,14 +55,14 @@
             // 
             // txtExpression
             // 
-            txtExpression.Location = new Point(33, 137);
+            txtExpression.Location = new Point(33, 89);
             txtExpression.Name = "txtExpression";
             txtExpression.Size = new Size(295, 23);
             txtExpression.TabIndex = 0;
             // 
             // txtResult
             // 
-            txtResult.Location = new Point(33, 91);
+            txtResult.Location = new Point(33, 140);
             txtResult.Name = "txtResult";
             txtResult.Size = new Size(295, 23);
             txtResult.TabIndex = 1;

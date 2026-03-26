@@ -1,6 +1,3 @@
-using System;
-using System.Windows.Forms;
-
 namespace SimpleCalculator
 {
     public partial class Form1 : Form
@@ -9,72 +6,39 @@ namespace SimpleCalculator
         string currentInput = "";
         int firstNumber = 0;
         string op = "";
+        bool isNewInput = false;
 
         public Form1()
         {
             InitializeComponent();
         }
 
+        // ===== 숫자 입력 공통 =====
+        private void InputNumber(string num)
+        {
+            if (isNewInput)
+            {
+                currentInput = "";
+                isNewInput = false;
+            }
+
+            currentInput += num;
+
+            // 위: 수식 누적
+            txtExpression.Text += num;
+        }
+
         // ===== 숫자 버튼 =====
-        private void btn0_Click(object sender, EventArgs e)
-        {
-            currentInput += "0";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn1_Click(object sender, EventArgs e)
-        {
-            currentInput += "1";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn2_Click(object sender, EventArgs e)
-        {
-            currentInput += "2";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn3_Click(object sender, EventArgs e)
-        {
-            currentInput += "3";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn4_Click(object sender, EventArgs e)
-        {
-            currentInput += "4";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn5_Click(object sender, EventArgs e)
-        {
-            currentInput += "5";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn6_Click(object sender, EventArgs e)
-        {
-            currentInput += "6";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn7_Click(object sender, EventArgs e)
-        {
-            currentInput += "7";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn8_Click(object sender, EventArgs e)
-        {
-            currentInput += "8";
-            txtResult.Text = currentInput;
-        }
-
-        private void btn9_Click(object sender, EventArgs e)
-        {
-            currentInput += "9";
-            txtResult.Text = currentInput;
-        }
+        private void btn0_Click(object sender, EventArgs e) { InputNumber("0"); }
+        private void btn1_Click(object sender, EventArgs e) { InputNumber("1"); }
+        private void btn2_Click(object sender, EventArgs e) { InputNumber("2"); }
+        private void btn3_Click(object sender, EventArgs e) { InputNumber("3"); }
+        private void btn4_Click(object sender, EventArgs e) { InputNumber("4"); }
+        private void btn5_Click(object sender, EventArgs e) { InputNumber("5"); }
+        private void btn6_Click(object sender, EventArgs e) { InputNumber("6"); }
+        private void btn7_Click(object sender, EventArgs e) { InputNumber("7"); }
+        private void btn8_Click(object sender, EventArgs e) { InputNumber("8"); }
+        private void btn9_Click(object sender, EventArgs e) { InputNumber("9"); }
 
         // ===== + 버튼 =====
         private void btnpl_Click(object sender, EventArgs e)
@@ -84,8 +48,8 @@ namespace SimpleCalculator
             firstNumber = int.Parse(currentInput);
             op = "+";
 
-            txtExpression.Text = currentInput + " + ";
-            currentInput = "";
+            txtExpression.Text += " + ";
+            isNewInput = true;
         }
 
         // ===== = 버튼 =====
@@ -96,57 +60,23 @@ namespace SimpleCalculator
             int secondNumber = int.Parse(currentInput);
             int result = firstNumber + secondNumber;
 
-            txtExpression.Text = firstNumber + " + " + secondNumber + " = " + result;
+            // 아래: 결과만 표시
             txtResult.Text = result.ToString();
 
             currentInput = result.ToString();
             op = "";
+            isNewInput = true;
         }
 
-        // ===== 아래는 네가 만든 버튼들 (삭제 안 함 / 빈 상태 유지 or 최소 처리) =====
-
-        private void btnmin_Click(object sender, EventArgs e)
-        {
-            // 과제1에서는 사용 안 함
-        }
-
-        private void btnmul_Click(object sender, EventArgs e)
-        {
-            // 과제1에서는 사용 안 함
-        }
-
-        private void btndiv_Click(object sender, EventArgs e)
-        {
-            // 과제1에서는 사용 안 함
-        }
-
-        private void btndot_Click(object sender, EventArgs e)
-        {
-            // 과제1에서는 사용 안 함
-        }
-
-        private void btnpm_Click(object sender, EventArgs e)
-        {
-            // 과제1에서는 사용 안 함
-        }
-
-        private void C_Click(object sender, EventArgs e)
-        {
-            // 과제1에서는 사용 안 함
-        }
-
-        private void CE_Click(object sender, EventArgs e)
-        {
-            // 과제1에서는 사용 안 함
-        }
-
-        private void del_Click(object sender, EventArgs e)
-        {
-            // 과제1에서는 사용 안 함
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-        }
+        // ===== 나머지 버튼 유지 =====
+        private void btnmin_Click(object sender, EventArgs e) { }
+        private void btnmul_Click(object sender, EventArgs e) { }
+        private void btndiv_Click(object sender, EventArgs e) { }
+        private void btndot_Click(object sender, EventArgs e) { }
+        private void btnpm_Click(object sender, EventArgs e) { }
+        private void C_Click(object sender, EventArgs e) { }
+        private void CE_Click(object sender, EventArgs e) { }
+        private void del_Click(object sender, EventArgs e) { }
+        private void label1_Click(object sender, EventArgs e) { }
     }
 }
