@@ -1,15 +1,11 @@
 using System;
-using System.Data;
 using System.Windows.Forms;
 
 namespace SimpleCalculator
 {
     public partial class Form1 : Form
     {
-        // 현재 입력 중인 숫자
         string currentInput = "";
-
-        // 마지막에 새 입력을 시작해야 하는지 여부
         bool isNewInput = false;
 
         public Form1()
@@ -17,10 +13,9 @@ namespace SimpleCalculator
             InitializeComponent();
         }
 
-        // 숫자 입력 공통 처리
+        // 숫자 입력
         private void InputNumber(string num)
         {
-            // = 계산 직후 새 숫자를 입력하면 새로 시작
             if (isNewInput)
             {
                 txtExpression.Text = "";
@@ -33,7 +28,23 @@ namespace SimpleCalculator
             txtExpression.Text += num;
         }
 
-        // 현재 수식의 마지막 숫자 부분만 찾아서 currentInput에 맞게 바꿔주는 함수
+        // 연산자 입력 공통
+        private void InputOperator(string op)
+        {
+            if (txtExpression.Text == "") return;
+
+            if (txtExpression.Text.EndsWith(" + ") ||
+                txtExpression.Text.EndsWith(" - ") ||
+                txtExpression.Text.EndsWith(" × ") ||
+                txtExpression.Text.EndsWith(" ÷ "))
+                return;
+
+            txtExpression.Text += op;
+            currentInput = "";
+            isNewInput = false;
+        }
+
+        // 현재 입력 숫자 부분만 교체
         private void ReplaceCurrentInputInExpression()
         {
             string expr = txtExpression.Text;
@@ -56,12 +67,10 @@ namespace SimpleCalculator
 
             if (lastOperatorIndex == -1)
             {
-                // 연산자가 없으면 전체를 현재 입력값으로 교체
                 txtExpression.Text = currentInput;
             }
             else
             {
-                // 마지막 연산자 뒤의 숫자만 현재 입력값으로 교체
                 string leftPart = expr.Substring(0, lastOperatorIndex + 3);
                 txtExpression.Text = leftPart + currentInput;
             }
@@ -79,27 +88,44 @@ namespace SimpleCalculator
         private void btn8_Click(object sender, EventArgs e) { InputNumber("8"); }
         private void btn9_Click(object sender, EventArgs e) { InputNumber("9"); }
 
-        // + 버튼
-        private void btnpl_Click(object sender, EventArgs e)
+        // 사칙연산 버튼
+        private void btnpl_Click(object sender, EventArgs e) { InputOperator(" + "); }
+        private void btnmin_Click(object sender, EventArgs e) { InputOperator(" - "); }
+        private void btnmul_Click(object sender, EventArgs e) { InputOperator(" × "); }
+        private void btndiv_Click(object sender, EventArgs e) { InputOperator(" ÷ "); }
+
+        // 왼쪽 괄호 (
+        private void btnLeftParen_Click(object sender, EventArgs e)
         {
-            if (txtExpression.Text == "") return;
+            if (isNewInput)
+            {
+                txtExpression.Text = "";
+                txtResult.Text = "";
+                currentInput = "";
+                isNewInput = false;
+            }
 
-            // 연산자 연속 입력 방지
-            if (txtExpression.Text.EndsWith(" + ") ||
-                txtExpression.Text.EndsWith(" - ") ||
-                txtExpression.Text.EndsWith(" × ") ||
-                txtExpression.Text.EndsWith(" ÷ "))
-                return;
+            // 숫자나 ) 바로 뒤에는 곱셈 자동 추가
+            if (txtExpression.Text.Length > 0)
+            {
+                char last = txtExpression.Text[txtExpression.Text.Length - 1];
+                if (char.IsDigit(last) || last == ')' || last == '.')
+                {
+                    txtExpression.Text += " × ";
+                }
+            }
 
-            txtExpression.Text += " + ";
+            txtExpression.Text += "(";
             currentInput = "";
-            isNewInput = false;
         }
 
-        // - 버튼
-        private void btnmin_Click(object sender, EventArgs e)
+        // 오른쪽 괄호 )
+        private void btnRightParen_Click(object sender, EventArgs e)
         {
             if (txtExpression.Text == "") return;
+
+            char last = txtExpression.Text[txtExpression.Text.Length - 1];
+            if (last == '(') return;
 
             if (txtExpression.Text.EndsWith(" + ") ||
                 txtExpression.Text.EndsWith(" - ") ||
@@ -107,41 +133,44 @@ namespace SimpleCalculator
                 txtExpression.Text.EndsWith(" ÷ "))
                 return;
 
-            txtExpression.Text += " - ";
-            currentInput = "";
-            isNewInput = false;
+            int openCount = 0;
+            int closeCount = 0;
+
+            foreach (char c in txtExpression.Text)
+            {
+                if (c == '(') openCount++;
+                if (c == ')') closeCount++;
+            }
+
+            if (openCount > closeCount)
+            {
+                txtExpression.Text += ")";
+            }
         }
 
-        // × 버튼
-        private void btnmul_Click(object sender, EventArgs e)
+        // 루트 버튼 √
+        private void btnSqrt_Click(object sender, EventArgs e)
         {
-            if (txtExpression.Text == "") return;
+            if (isNewInput)
+            {
+                txtExpression.Text = "";
+                txtResult.Text = "";
+                currentInput = "";
+                isNewInput = false;
+            }
 
-            if (txtExpression.Text.EndsWith(" + ") ||
-                txtExpression.Text.EndsWith(" - ") ||
-                txtExpression.Text.EndsWith(" × ") ||
-                txtExpression.Text.EndsWith(" ÷ "))
-                return;
+            // 숫자나 ) 뒤에 루트가 오면 곱셈 처리
+            if (txtExpression.Text.Length > 0)
+            {
+                char last = txtExpression.Text[txtExpression.Text.Length - 1];
+                if (char.IsDigit(last) || last == ')' || last == '.')
+                {
+                    txtExpression.Text += " × ";
+                }
+            }
 
-            txtExpression.Text += " × ";
+            txtExpression.Text += "√(";
             currentInput = "";
-            isNewInput = false;
-        }
-
-        // ÷ 버튼
-        private void btndiv_Click(object sender, EventArgs e)
-        {
-            if (txtExpression.Text == "") return;
-
-            if (txtExpression.Text.EndsWith(" + ") ||
-                txtExpression.Text.EndsWith(" - ") ||
-                txtExpression.Text.EndsWith(" × ") ||
-                txtExpression.Text.EndsWith(" ÷ "))
-                return;
-
-            txtExpression.Text += " ÷ ";
-            currentInput = "";
-            isNewInput = false;
         }
 
         // = 버튼
@@ -151,22 +180,40 @@ namespace SimpleCalculator
 
             try
             {
-                // 마지막이 연산자로 끝나면 계산하지 않음
                 if (txtExpression.Text.EndsWith(" + ") ||
                     txtExpression.Text.EndsWith(" - ") ||
                     txtExpression.Text.EndsWith(" × ") ||
                     txtExpression.Text.EndsWith(" ÷ "))
                     return;
 
-                // 계산 가능한 형태로 변환
-                string expression = txtExpression.Text
+                string originalExpression = txtExpression.Text;
+
+                // 괄호 자동 닫기
+                int openCount = 0;
+                int closeCount = 0;
+                foreach (char c in originalExpression)
+                {
+                    if (c == '(') openCount++;
+                    if (c == ')') closeCount++;
+                }
+
+                while (openCount > closeCount)
+                {
+                    originalExpression += ")";
+                    closeCount++;
+                }
+
+                string expression = originalExpression
                     .Replace("×", "*")
-                    .Replace("÷", "/");
+                    .Replace("÷", "/")
+                    .Replace(" ", "");
 
-                var result = new DataTable().Compute(expression, "");
+                double result = ExpressionEvaluator.Evaluate(expression);
+                string resultText = result.ToString();
 
-                txtResult.Text = result.ToString();
-                currentInput = result.ToString();
+                txtExpression.Text = originalExpression + " = " + resultText;
+                txtResult.Text = resultText;
+                currentInput = resultText;
                 isNewInput = true;
             }
             catch
@@ -175,16 +222,14 @@ namespace SimpleCalculator
             }
         }
 
-        // Del 버튼
+        // Del 버튼 - 한 글자 삭제
         private void del_Click(object sender, EventArgs e)
         {
             if (isNewInput) return;
             if (txtExpression.Text == "") return;
 
-            // 마지막 한 글자 삭제
             txtExpression.Text = txtExpression.Text.Substring(0, txtExpression.Text.Length - 1);
 
-            // currentInput 다시 계산
             string expr = txtExpression.Text;
 
             int plusIndex = expr.LastIndexOf(" + ");
@@ -203,7 +248,7 @@ namespace SimpleCalculator
                 currentInput = expr.Substring(lastOperatorIndex + 3);
         }
 
-        // C 버튼
+        // C 버튼 - 전체 삭제
         private void C_Click(object sender, EventArgs e)
         {
             currentInput = "";
@@ -212,14 +257,31 @@ namespace SimpleCalculator
             txtResult.Text = "";
         }
 
-        // CE 버튼
-        // 네가 요청한 대로 전체 초기화
+        // CE 버튼 - 마지막 숫자만 삭제
         private void CE_Click(object sender, EventArgs e)
         {
-            currentInput = "";
-            isNewInput = false;
-            txtExpression.Text = "";
-            txtResult.Text = "";
+            if (txtExpression.Text == "") return;
+            if (isNewInput) return;
+
+            string expr = txtExpression.Text;
+
+            int i = expr.Length - 1;
+
+            while (i >= 0 && (char.IsDigit(expr[i]) || expr[i] == '.'))
+            {
+                i--;
+            }
+
+            if (i < expr.Length - 1)
+            {
+                txtExpression.Text = expr.Substring(0, i + 1);
+                currentInput = "";
+            }
+            else
+            {
+                txtExpression.Text = "";
+                currentInput = "";
+            }
         }
 
         // . 버튼
@@ -233,7 +295,6 @@ namespace SimpleCalculator
                 isNewInput = false;
             }
 
-            // 현재 입력값에 이미 소수점이 있으면 추가 안 함
             if (currentInput.Contains(".")) return;
 
             if (currentInput == "")
@@ -260,9 +321,141 @@ namespace SimpleCalculator
             ReplaceCurrentInputInExpression();
         }
 
-        // 라벨 이벤트
         private void label1_Click(object sender, EventArgs e)
         {
+        }
+    }
+
+    // 괄호, 사칙연산, 루트 지원 계산기 파서
+    public class ExpressionEvaluator
+    {
+        private string text;
+        private int pos;
+
+        private ExpressionEvaluator(string expression)
+        {
+            text = expression;
+            pos = 0;
+        }
+
+        public static double Evaluate(string expression)
+        {
+            var parser = new ExpressionEvaluator(expression);
+            double value = parser.ParseExpression();
+
+            if (parser.pos < parser.text.Length)
+                throw new Exception("잘못된 수식");
+
+            return value;
+        }
+
+        // +, -
+        private double ParseExpression()
+        {
+            double value = ParseTerm();
+
+            while (pos < text.Length)
+            {
+                if (Match('+'))
+                {
+                    value += ParseTerm();
+                }
+                else if (Match('-'))
+                {
+                    value -= ParseTerm();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return value;
+        }
+
+        // *, /
+        private double ParseTerm()
+        {
+            double value = ParseFactor();
+
+            while (pos < text.Length)
+            {
+                if (Match('*'))
+                {
+                    value *= ParseFactor();
+                }
+                else if (Match('/'))
+                {
+                    double divisor = ParseFactor();
+                    if (divisor == 0)
+                        throw new DivideByZeroException();
+
+                    value /= divisor;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return value;
+        }
+
+        // 숫자, 괄호, 루트, 음수
+        private double ParseFactor()
+        {
+            if (Match('+'))
+                return ParseFactor();
+
+            if (Match('-'))
+                return -ParseFactor();
+
+            if (Match('√'))
+            {
+                double value = ParseFactor();
+                if (value < 0)
+                    throw new Exception("음수의 루트 불가");
+
+                return Math.Sqrt(value);
+            }
+
+            if (Match('('))
+            {
+                double value = ParseExpression();
+
+                if (!Match(')'))
+                    throw new Exception("괄호 오류");
+
+                return value;
+            }
+
+            return ParseNumber();
+        }
+
+        private double ParseNumber()
+        {
+            int start = pos;
+
+            while (pos < text.Length && (char.IsDigit(text[pos]) || text[pos] == '.'))
+            {
+                pos++;
+            }
+
+            if (start == pos)
+                throw new Exception("숫자 오류");
+
+            string number = text.Substring(start, pos - start);
+            return double.Parse(number);
+        }
+
+        private bool Match(char c)
+        {
+            if (pos < text.Length && text[pos] == c)
+            {
+                pos++;
+                return true;
+            }
+            return false;
         }
     }
 }
