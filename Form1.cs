@@ -324,6 +324,11 @@ namespace SimpleCalculator
         private void label1_Click(object sender, EventArgs e)
         {
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 
     // 괄호, 사칙연산, 루트 지원 계산기 파서

@@ -54,7 +54,7 @@
             btnSqrt = new Button();
             btnRightParen = new Button();
             btnLeftParen = new Button();
-            btngap2 = new Button();
+            btndiv = new Button();
             btngap1 = new Button();
             SuspendLayout();
             // 
@@ -336,14 +336,16 @@
             btnLeftParen.UseVisualStyleBackColor = true;
             btnLeftParen.Click += btnLeftParen_Click;
             // 
-            // btngap2
+            // btndiv
             // 
-            btngap2.Font = new Font("맑은 고딕", 11F, FontStyle.Bold);
-            btngap2.Location = new Point(259, 238);
-            btngap2.Name = "btngap2";
-            btngap2.Size = new Size(69, 38);
-            btngap2.TabIndex = 27;
-            btngap2.UseVisualStyleBackColor = true;
+            btndiv.Font = new Font("맑은 고딕", 11F, FontStyle.Bold);
+            btndiv.Location = new Point(259, 238);
+            btndiv.Name = "btndiv";
+            btndiv.Size = new Size(69, 38);
+            btndiv.TabIndex = 27;
+            btndiv.Text = "÷";
+            btndiv.UseVisualStyleBackColor = true;
+            btndiv.Click += btndiv_Click;
             // 
             // btngap1
             // 
@@ -360,7 +362,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(374, 496);
             Controls.Add(btngap1);
-            Controls.Add(btngap2);
+            Controls.Add(btndiv);
             Controls.Add(btnLeftParen);
             Controls.Add(btnRightParen);
             Controls.Add(btnSqrt);
@@ -389,6 +391,7 @@
             Controls.Add(txtExpression);
             Name = "Form1";
             Text = "Form1";
+            Load += Form1_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -421,7 +424,7 @@
         private Button btnSqrt;
         private Button btnRightParen;
         private Button btnLeftParen;
-        private Button btngap2;
+        private Button btndiv;
         private Button btngap1;
     }
 }
